@@ -181,7 +181,8 @@ def initialize_gemini():
         gemini_model = ChatGoogleGenerativeAI(
             model="gemini-1.5-flash-latest",
             temperature=0.8,
-            max_tokens=1000
+            max_tokens=1000,
+            google_api_key=os.environ["GOOGLE_API_KEY"]
         )
 
         return gemini_model
