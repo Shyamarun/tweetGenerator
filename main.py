@@ -21,10 +21,30 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    /* global dark background */
+    /* Define the gradient theme */
+    :root {
+        --gradient: linear-gradient(90deg, #ff6f61, #ffb88c, #6b7280, #60a5fa);
+        --gradient-bg: linear-gradient(135deg, #ff6f61, #ffb88c, #6b7280, #60a5fa);
+    }
+    
+    /* Global dark background with gradient overlay */
     .stApp {
-        background: #0e0e0e;
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
         color: #ffffff;
+        position: relative;
+    }
+    
+    .stApp::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--gradient);
+        opacity: 0.03;
+        pointer-events: none;
+        z-index: -1;
     }
     
     /* Hide streamlit header and footer */
@@ -36,130 +56,245 @@ st.markdown(
         padding-top: 2rem;
     }
     
-    /* inputs */
+    /* Input fields with gradient borders */
     .stTextInput > div > div > input {
-        background: #1a1a1a;
-        color: #00e5ff;
-        caret-color: #00e5ff;
-        border: 1px solid #00e5ff;
-        border-radius: 8px;
-        padding: 10px;
-        font-size: 1.1rem;
-    }
-    
-    .stTextInput > div > div > input:focus {
-        border: 2px solid #00e5ff;
-        box-shadow: 0 0 10px rgba(0,229,255,0.3);
-    }
-    
-    .stNumberInput > div > div > input {
-        background: #1a1a1a;
-        color: #00e5ff;
-        caret-color: #00e5ff;
-        border: 1px solid #00e5ff;
-        border-radius: 8px;
-        padding: 10px;
-        font-size: 1.1rem;
-    }
-    
-    .stNumberInput > div > div > input:focus {
-        border: 2px solid #00e5ff;
-        box-shadow: 0 0 10px rgba(0,229,255,0.3);
-    }
-    
-    /* button neon */
-    div.stButton > button {
-        background: transparent;
-        color: #00e5ff;
-        border: 2px solid #00e5ff;
-        padding: 0.6rem 2.5rem;
-        border-radius: 8px;
-        font-weight: bold;
-        letter-spacing: 1px;
-        transition: all 0.2s ease-in-out;
-        width: 100%;
-    }
-    
-    div.stButton > button:hover {
-        background: #00e5ff;
-        color: #0e0e0e;
-        box-shadow: 0 0 15px #00e5ff;
-        transform: translateY(-1px);
-    }
-    
-    /* tweet cards */
-    .tweet-card {
-        background: linear-gradient(145deg, #161616, #1a1a1a);
-        border-left: 4px solid #00e5ff;
-        padding: 15px 20px;
-        margin: 15px 0;
-        border-radius: 8px;
-        font-size: 1.1rem;
+        background: rgba(26, 26, 26, 0.9);
         color: #ffffff;
-        box-shadow: 0 0 10px rgba(0,229,255,0.25);
-        transition: all 0.3s ease;
+        caret-color: #ff6f61;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+        border-radius: 10px;
+        padding: 12px 15px;
+        font-size: 1.1rem;
         position: relative;
     }
     
-    .tweet-card:hover {
-        box-shadow: 0 0 20px rgba(0,229,255,0.4);
-        transform: translateX(5px);
+    .stTextInput > div > div {
+        position: relative;
+    }
+    
+    .stTextInput > div > div::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        padding: 2px;
+        background: var(--gradient);
+        border-radius: 10px;
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask-composite: xor;
+        -webkit-mask-composite: xor;
+        pointer-events: none;
+    }
+    
+    .stTextInput > div > div > input:focus {
+        outline: none;
+        box-shadow: 0 0 20px rgba(255, 111, 97, 0.3);
+    }
+    
+    .stNumberInput > div > div > input {
+        background: rgba(26, 26, 26, 0.9);
+        color: #ffffff;
+        caret-color: #ff6f61;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+        border-radius: 10px;
+        padding: 12px 15px;
+        font-size: 1.1rem;
+    }
+    
+    .stNumberInput > div > div {
+        position: relative;
+    }
+    
+    .stNumberInput > div > div::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        padding: 2px;
+        background: var(--gradient);
+        border-radius: 10px;
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask-composite: xor;
+        -webkit-mask-composite: xor;
+        pointer-events: none;
+    }
+    
+    .stNumberInput > div > div > input:focus {
+        outline: none;
+        box-shadow: 0 0 20px rgba(255, 111, 97, 0.3);
+    }
+    
+    /* Button with gradient background - FIXED VISIBILITY */
+    div.stButton > button {
+        background: var(--gradient) !important;
+        color: #ffffff !important;
+        border: none !important;
+        padding: 0.8rem 2.5rem !important;
+        border-radius: 12px !important;
+        font-weight: bold !important;
+        font-size: 1.1rem !important;
+        letter-spacing: 1px !important;
+        transition: all 0.3s ease-in-out !important;
+        width: 100% !important;
+        box-shadow: 0 4px 15px rgba(255, 111, 97, 0.3) !important;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.7) !important;
+    }
+    
+    div.stButton > button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 25px rgba(255, 111, 97, 0.5) !important;
+        filter: brightness(1.1) !important;
+    }
+    
+    div.stButton > button:active {
+        transform: translateY(0px) !important;
+    }
+    
+    /* Tweet cards with gradient accents */
+    .tweet-card {
+        background: linear-gradient(145deg, #1a1a1a, #252525);
+        border: 2px solid transparent;
+        background-clip: padding-box;
+        padding: 20px 25px;
+        margin: 20px 0;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        color: #ffffff;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
     }
     
     .tweet-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        padding: 2px;
+        background: var(--gradient);
+        border-radius: 12px;
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask-composite: xor;
+        -webkit-mask-composite: xor;
+        opacity: 0.6;
+    }
+    
+    .tweet-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(255, 111, 97, 0.2);
+    }
+    
+    .tweet-card::after {
         content: "🐦";
         position: absolute;
-        top: 10px;
-        right: 15px;
+        top: 15px;
+        right: 20px;
         opacity: 0.3;
-        font-size: 1.2rem;
+        font-size: 1.3rem;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
     
-    /* spinner */
-    .stSpinner > div {
-        border-top-color: #00e5ff;
-    }
-    
-    /* warning messages */
-    .stAlert {
-        background-color: #1a1a1a;
-        border: 1px solid #ff6b35;
-        color: #ffffff;
-    }
-    
-    /* form styling */
+    /* Form styling with gradient */
     .stForm {
-        background: #161616;
-        padding: 20px;
-        border-radius: 10px;
-        border: 1px solid #333333;
+        background: linear-gradient(145deg, #1a1a1a, #252525);
+        padding: 25px;
+        border-radius: 15px;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+        position: relative;
     }
     
-    /* labels */
+    .stForm::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        padding: 2px;
+        background: var(--gradient);
+        border-radius: 15px;
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask-composite: xor;
+        -webkit-mask-composite: xor;
+        opacity: 0.4;
+    }
+    
+    /* Labels with gradient text */
     .stTextInput > label, .stNumberInput > label {
-        color: #00e5ff !important;
-        font-weight: 600;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 700 !important;
+        font-size: 1.1rem !important;
     }
     
-    /* success message */
+    /* Success and warning messages */
     .stSuccess {
-        background-color: rgba(0, 229, 255, 0.1);
-        border: 1px solid #00e5ff;
-        color: #00e5ff;
+        background: linear-gradient(135deg, rgba(255, 111, 97, 0.1), rgba(255, 184, 140, 0.1));
+        border: 1px solid #ff6f61;
+        color: #ffffff;
+        border-radius: 10px;
     }
     
-    /* loading animation */
+    .stAlert {
+        background: linear-gradient(135deg, rgba(255, 111, 97, 0.1), rgba(255, 184, 140, 0.1));
+        border: 1px solid #ffb88c;
+        color: #ffffff;
+        border-radius: 10px;
+    }
+    
+    /* Loading animation */
     .loading-text {
-        color: #00e5ff;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
         text-align: center;
-        font-size: 1.2rem;
+        font-size: 1.3rem;
+        font-weight: bold;
         animation: pulse 1.5s ease-in-out infinite;
     }
     
+    /* Spinner color */
+    .stSpinner > div {
+        border-top-color: #ff6f61 !important;
+        border-right-color: #ffb88c !important;
+    }
+    
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #1a1a1a;
+        border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: var(--gradient);
+        border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        filter: brightness(1.2);
+    }
+    
     @keyframes pulse {
-        0% { opacity: 0.6; }
+        0% { opacity: 0.7; }
         50% { opacity: 1; }
-        100% { opacity: 0.6; }
+        100% { opacity: 0.7; }
+    }
+    
+    /* Gradient text utility */
+    .gradient-text {
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: bold;
     }
     </style>
     """,
@@ -248,10 +383,10 @@ def main():
     st.markdown(
         """
         <div style="text-align: center; margin-bottom: 2rem;">
-            <h1 style="color: #00e5ff; font-size: 3rem; text-shadow: 0 0 20px #00e5ff; margin-bottom: 0.5rem;">
-                ⚡ Neon Tweet Generator ⚡
+            <h1 class="gradient-text" style="font-size: 3.5rem; margin-bottom: 0.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
+                ⚡ Gradient Tweet Generator ⚡
             </h1>
-            <p style="color: #888; font-size: 1.2rem; margin-bottom: 2rem;">
+            <p style="color: #cccccc; font-size: 1.2rem; margin-bottom: 2rem; font-weight: 300;">
                 Powered by Google Gemini AI • Generate viral tweets in seconds
             </p>
         </div>
@@ -301,7 +436,7 @@ def main():
         # Display results
         st.markdown(
             f"""
-            <h3 style='color: #00e5ff; text-align: center; margin: 2rem 0 1rem 0;'>
+            <h3 class="gradient-text" style='text-align: center; margin: 2rem 0 1rem 0; font-size: 1.8rem;'>
                 ✨ Generated {len(tweets)} Tweets for "{topic}" ✨
             </h3>
             """, 
@@ -333,9 +468,9 @@ def main():
     st.markdown("---")
     st.markdown(
         """
-        <div style="text-align: center; color: #555; font-size: 0.9rem; margin-top: 2rem;">
-            <p>💡 Pro tip: Try topics like "AI", "Startup Tips", "Web Development", "Marketing" for best results</p>
-            <p style="margin-top: 1rem;">Built with ❤️ using Streamlit & Google Gemini AI</p>
+        <div style="text-align: center; color: #888; font-size: 0.9rem; margin-top: 2rem;">
+            <p class="gradient-text" style="font-size: 1rem; margin-bottom: 1rem;">💡 Pro tip: Try topics like "AI", "Startup Tips", "Web Development", "Marketing" for best results</p>
+            <p style="margin-top: 1rem; color: #666;">Built with ❤️ using Streamlit & Google Gemini AI</p>
         </div>
         """, 
         unsafe_allow_html=True
