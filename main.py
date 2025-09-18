@@ -313,7 +313,7 @@ def main():
         # Display results
         st.markdown(
             f"""
-            <h3 class = 'gradient-tweets'>
+            <h3 class = "gradient-heading">
                 ✨ Generated {len(tweets)} Tweets for "{topic}" ✨
             </h3>
             """,
