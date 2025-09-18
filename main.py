@@ -17,7 +17,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-
 # ---------- GRADIENT NEON CSS ----------
 st.markdown(
     """
@@ -142,6 +141,17 @@ st.markdown(
         font-size: 1.2rem;
         animation: pulse 1.5s ease-in-out infinite;
     }
+    
+    .gradient-heading {
+    font-size: 3rem;
+    font-weight: 900;
+    background: linear-gradient(90deg, #ff6f61, #ffb88c, #6b7280, #60a5fa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 15px rgba(255,255,255,0.2);
+    margin-bottom: 0.5rem;
+}
+
 
     @keyframes pulse {
         0% { opacity: 0.6; }
@@ -154,6 +164,7 @@ st.markdown(
 )
 
 
+
 # ---------- BACKEND SETUP ----------
 def initialize_gemini():
     """Initialize Gemini model with API key from secrets"""
@@ -163,21 +174,22 @@ def initialize_gemini():
         if not api_key:
             st.error("❌ Google API Key not found in secrets. Please add GOOGLE_API_KEY to your Streamlit secrets.")
             st.stop()
-        
+
         os.environ['GOOGLE_API_KEY'] = api_key
-        
+
         # Initialize Google's Gemini model
         gemini_model = ChatGoogleGenerativeAI(
             model="gemini-1.5-flash-latest",
             temperature=0.8,
             max_tokens=1000
         )
-        
+
         return gemini_model
-    
+
     except Exception as e:
         st.error(f"❌ Error initializing Gemini: {str(e)}")
         st.stop()
+
 
 def generate_tweets_with_ai(topic: str, count: int, model) -> list[str]:
     """Generate tweets using Gemini AI"""
@@ -199,36 +211,37 @@ def generate_tweets_with_ai(topic: str, count: int, model) -> list[str]:
 
         Generate the tweets now:
         """
-        
+
         tweet_prompt = PromptTemplate(
-            template=tweet_template, 
+            template=tweet_template,
             input_variables=['number', 'topic']
         )
-        
+
         # Create chain
         tweet_chain = tweet_prompt | model
-        
+
         # Generate tweets
         response = tweet_chain.invoke({"number": count, "topic": topic})
-        
+
         # Parse the response
         if hasattr(response, 'content'):
             tweets_text = response.content
         else:
             tweets_text = str(response)
-        
+
         # Split tweets by separator
         tweets = [tweet.strip() for tweet in tweets_text.split("---") if tweet.strip()]
-        
+
         # If we don't get enough tweets, pad with the ones we have
         while len(tweets) < count and len(tweets) > 0:
-            tweets.extend(tweets[:count-len(tweets)])
-        
+            tweets.extend(tweets[:count - len(tweets)])
+
         return tweets[:count] if tweets else [f"🔥 {topic} is the future! Stay tuned for more updates. #Innovation"]
-    
+
     except Exception as e:
         st.error(f"❌ Error generating tweets: {str(e)}")
         return [f"⚡ Exciting things happening with {topic}! #TechTrends"]
+
 
 # ---------- MAIN UI ----------
 def main():
@@ -236,66 +249,66 @@ def main():
     st.markdown(
         """
         <div style="text-align: center; margin-bottom: 2rem;">
-            <h1 style="color: #00e5ff; font-size: 3rem; text-shadow: 0 0 20px #00e5ff; margin-bottom: 0.5rem;">
+            <h1 class="gradient-heading">
                 ⚡ Neon Tweet Generator ⚡
             </h1>
             <p style="color: #888; font-size: 1.2rem; margin-bottom: 2rem;">
                 Powered by Google Gemini AI • Generate viral tweets in seconds
             </p>
         </div>
-        """, 
+        """,
         unsafe_allow_html=True
     )
-    
+
     # Initialize Gemini model
     if 'gemini_model' not in st.session_state:
         with st.spinner('Initializing AI model...'):
             st.session_state.gemini_model = initialize_gemini()
-    
+
     # Main form
     with st.form("generator", clear_on_submit=False):
         col1, col2 = st.columns([3, 1])
-        
+
         with col1:
             topic = st.text_input(
-                "💡 What's your topic?", 
+                "💡 What's your topic?",
                 placeholder="e.g. Artificial Intelligence, Crypto, Web3, Climate Change...",
                 help="Enter any topic you want to create tweets about"
             )
-        
+
         with col2:
             num = st.number_input(
-                "📊 Number of tweets", 
-                min_value=1, 
-                max_value=20, 
-                value=5, 
+                "📊 Number of tweets",
+                min_value=1,
+                max_value=20,
+                value=5,
                 step=1,
                 help="Choose how many tweets to generate"
             )
-        
+
         submitted = st.form_submit_button("🚀 Generate Tweets")
-    
+
     # Generate tweets when form is submitted
     if submitted and topic.strip():
         st.markdown("---")
-        
+
         # Loading animation
         with st.spinner(''):
             st.markdown('<div class="loading-text">🤖 AI is crafting your tweets...</div>', unsafe_allow_html=True)
-            
+
             # Generate tweets using AI
             tweets = generate_tweets_with_ai(topic.strip(), int(num), st.session_state.gemini_model)
-        
+
         # Display results
         st.markdown(
             f"""
             <h3 style='color: #00e5ff; text-align: center; margin: 2rem 0 1rem 0;'>
                 ✨ Generated {len(tweets)} Tweets for "{topic}" ✨
             </h3>
-            """, 
+            """,
             unsafe_allow_html=True
         )
-        
+
         # Display each tweet
         for i, tweet in enumerate(tweets, 1):
             st.markdown(
@@ -307,16 +320,16 @@ def main():
                         Characters: {len(tweet)} • {datetime.now().strftime("%I:%M %p")}
                     </div>
                 </div>
-                ''', 
+                ''',
                 unsafe_allow_html=True
             )
-        
+
         # Success message
         st.success(f"🎉 Successfully generated {len(tweets)} tweets! Copy and paste to your favorite platform.")
-    
+
     elif submitted:
         st.warning("⚠️ Please enter a topic first to generate tweets!")
-    
+
     # Footer
     st.markdown("---")
     st.markdown(
@@ -325,9 +338,10 @@ def main():
             <p>💡 Pro tip: Try topics like "AI", "Startup Tips", "Web Development", "Marketing" for best results</p>
             <p style="margin-top: 1rem;">Built with ❤️ using Streamlit & Google Gemini AI</p>
         </div>
-        """, 
+        """,
         unsafe_allow_html=True
     )
+
 
 if __name__ == "__main__":
     main()
