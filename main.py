@@ -151,6 +151,16 @@ st.markdown(
     text-shadow: 0 0 15px rgba(255,255,255,0.2);
     margin-bottom: 0.5rem;
 }
+    .gradient-tweets{
+    font-size: 3rem;
+        font-weight: 900;
+        background: linear-gradient(90deg, #ff6f61, #ffb88c, #6b7280, #60a5fa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 15px rgba(255,255,255,0.2);
+        margin-bottom: 0.5rem;
+    
+    }
 
 
     @keyframes pulse {
@@ -251,7 +261,7 @@ def main():
         """
         <div style="text-align: center; margin-bottom: 2rem;">
             <h1 class="gradient-heading">
-                ⚡ Neon Tweet Generator ⚡
+                ⚡ Tweet Generator ⚡
             </h1>
             <p style="color: #888; font-size: 1.2rem; margin-bottom: 2rem;">
                 Powered by Google Gemini AI • Generate viral tweets in seconds
@@ -303,7 +313,7 @@ def main():
         # Display results
         st.markdown(
             f"""
-            <h3 style='color: #00e5ff; text-align: center; margin: 2rem 0 1rem 0;'>
+            <h3 class = 'gradient-tweets'>
                 ✨ Generated {len(tweets)} Tweets for "{topic}" ✨
             </h3>
             """,
