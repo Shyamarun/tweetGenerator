@@ -210,7 +210,7 @@ def generate_tweets_with_ai(topic: str, count: int, model) -> list[str]:
         Generate exactly {number} creative and engaging tweets about {topic}. 
 
         Requirements:
-        - Each tweet should be under 280 characters
+        - Each tweet should be under 500 characters
         - Make them engaging, informative, and shareable
         - Use relevant emojis and hashtags where appropriate
         - Vary the style (some can be questions, statements, tips, etc.)
